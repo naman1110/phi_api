@@ -11,7 +11,7 @@ from typing import List
 
 
 
-from assistant2 import get_groq_assistant  
+from assistant import get_groq_assistant  
 from cryptography.fernet import Fernet
 import base64
 import binascii

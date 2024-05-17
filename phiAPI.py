@@ -11,7 +11,7 @@ from typing import List
 
 
 
-from assistant import get_groq_assistant  
+from assistant2 import get_groq_assistant  
 from cryptography.fernet import Fernet
 import base64
 import binascii
@@ -133,5 +133,4 @@ def clear_db():
 
 
 
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=9000)
+

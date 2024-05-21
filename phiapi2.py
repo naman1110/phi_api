@@ -8,6 +8,8 @@ from phi.document.reader.pdf import PDFReader
 from phi.document.reader.website import WebsiteReader
 from phi.utils.log import logger
 from typing import List
+import logging
+from logging.handlers import RotatingFileHandler
 
 
 
@@ -26,6 +28,12 @@ p_llm_model = "llama3-70b-8192"
 p_embeddings_model = "text-embedding-3-large"
 custom_key = 42 #"NetComLearning@PhiRagChatBot"
 
+logging.basicConfig(filename='app.log', level=logging.INFO, format='%(asctime)s %(levelname)s:%(message)s')
+handler = RotatingFileHandler('app.log', maxBytes=10000, backupCount=3)
+handler.setLevel(logging.INFO)
+handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s:%(message)s'))
+
+app.logger.addHandler(handler)
 
 @app.route('/receive-file', methods=['POST'])
 def receive_file():
@@ -47,6 +55,8 @@ def receive_file():
             file_path = os.path.join(folder_path, uploaded_file.filename)
             uploaded_file.save(file_path)
             process_file(file_path,rag_assistant,folder_name_param,uploaded_file.filename)  # Process the file directly for the knowledge base
+
+        else: logging.error(f"Error in processing file ")
     
     return jsonify({'message': 'Files uploaded successfully', 'kb_name': folder_name_param, 'kb_path':folder_path}),200
 
@@ -61,19 +71,34 @@ def process_file(filepath,rag_assistant,user_id,name):
                 rag_documents: List[Document] = reader.read(filepath)
                 if rag_documents:
                     rag_assistant.knowledge_base.load_documents(rag_documents, upsert=True,skip_existing=True)
-                    logger.debug("PDF processed and loaded into the knowledge base")
+                    logging.debug("PDF processed and loaded into the knowledge base")
                     ds[user_id].append(name)
                 else:
-                    logger.debug("Could not read PDF")
+                    logging.error(f"Could not read PDF {filepath}")
 
 @app.route('/listKB', methods=['GET'])
 def list_kb():
-    key = request.args.get('key', default=None, type=str)
-    if key is None or key not in ds:
-        return "Key not found", 200
-    # Access and return the data associated with the key
-    return {'KB': ds[key]}
-
+    if request.is_json:
+      data = request.get_json()
+      id=data.get('kb_name')
+      directory_path = upload_folder+"/"+id
+      files = list_files_in_folder(directory_path)
+      if files:
+          return jsonify({"kb_list": files, "kb_name":id}),200
+      else:
+          return jsonify({"kb_list": files, "kb_name":id,'message': 'The Knowledge Base does not exists.'}),200
+    else:
+         return jsonify({"error": "Missing parameters in request"}), 400
+         
+  
+ 
+def list_files_in_folder(folder_path):
+    file_list = []
+    for root, dirs, files in os.walk(folder_path):
+        for file in files:
+            print(file)
+            file_list.append(file)
+    return file_list
 
 @app.route('/chat', methods=['POST'])
 def rag_chat():  
@@ -99,7 +124,7 @@ def rag_chat():
                 response += delta 
     
     
-    logger.debug(f"run ids: {rag_assistant_run_ids}")
+    logging.info(f"run ids: {rag_assistant_run_ids} for user id:{rag_assistant.user_id}")
     return jsonify({"content": response,"kb_name":id}),200
     #return response
 
@@ -112,7 +137,7 @@ def clear_db():
         id=data.get('kb_name')
         directory_path = upload_folder+"/"+id
         rag_assistant = get_groq_assistant(llm_model=p_llm_model, embeddings_model=p_embeddings_model,user_id=id)
-        logger.info("Clearing KB : "+id)
+        logging.info("Clearing KB : "+id)
         clear_status = rag_assistant.knowledge_base.vector_db.clear()
         if clear_status:
             try:

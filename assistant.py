@@ -58,9 +58,9 @@ def get_groq_assistant(
         instructions=[
             "When a user asks a question, you will be provided with information about the question.",
             "Carefully read this information and provide a clear and concise answer to the user.",
-            "Do not use phrases like 'based on my knowledge' or 'depending on the information'.",
-            "It is mandatory to add references from where or which document or knowledge base document the response was generated.",
-            # "If no user prompt is asked then respond saying how can i help in various styles with the list of documents based on knowledge base documents for the current user_id. this is mandatory condition.",
+            "Retrieve relevant documents from the knowledge base to provide accurate and up-to-date information.",   
+            "Combine the retrieved information with your internal knowledge to generate a comprehensive and accurate response.",
+         
         ],
         # This setting adds references from the knowledge_base to the user prompt
         add_references_to_prompt=True,

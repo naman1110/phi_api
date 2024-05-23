@@ -153,6 +153,11 @@ def clear_db():
          return jsonify({'message': 'The Knowledge Base does not exists.', 'kb_name': id,"kb_path":directory_path}),404
          
     #return "Knowledge base cleared"
+
+@app.route('/status', methods=['GET'])
+def status_check():
+    logging.info('Status check called')
+    return jsonify({'status': 'API is up'}), 200
      
 
 

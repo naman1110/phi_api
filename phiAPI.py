@@ -1,6 +1,7 @@
 from collections import defaultdict
 from flask import Flask, request, jsonify 
 import os
+from flask_cors import CORS
 
 from phi.assistant import Assistant
 from phi.document import Document
@@ -27,6 +28,7 @@ ds=defaultdict(list)
 p_llm_model = "llama3-70b-8192"
 p_embeddings_model = "text-embedding-3-large"
 custom_key = 42 #"NetComLearning@PhiRagChatBot"
+CORS(app) 
 
 logging.basicConfig(filename='app.log', level=logging.INFO, format='%(asctime)s %(levelname)s:%(message)s')
 handler = RotatingFileHandler('app.log', maxBytes=10000, backupCount=3)

@@ -68,7 +68,7 @@ def process_file(filepath,rag_assistant,user_id,name):
     if rag_assistant.knowledge_base:
         with open(filepath, 'rb') as file:
                 # pdf_file = io.BytesIO(file.read())
-                reader = PDFReader(chunk_size=1750)
+                reader = PDFReader(chunk_size=2000)
                 # rag_name = name
                 rag_documents: List[Document] = reader.read(filepath)
                 if rag_documents:
@@ -78,7 +78,7 @@ def process_file(filepath,rag_assistant,user_id,name):
                 else:
                     logging.error(f"Could not read PDF {filepath}")
 
-@app.route('/listKB', methods=['GET'])
+@app.route('/get_file_contents', methods=['GET'])
 def list_kb():
     if request.is_json:
       data = request.get_json()

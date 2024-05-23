@@ -1,6 +1,7 @@
 from collections import defaultdict
 from flask import Flask, request, jsonify 
 import os
+from flask_cors import CORS
 
 from phi.assistant import Assistant
 from phi.document import Document
@@ -27,6 +28,7 @@ ds=defaultdict(list)
 p_llm_model = "llama3-70b-8192"
 p_embeddings_model = "text-embedding-3-large"
 custom_key = 42 #"NetComLearning@PhiRagChatBot"
+CORS(app) 
 
 logging.basicConfig(filename='app.log', level=logging.INFO, format='%(asctime)s %(levelname)s:%(message)s')
 handler = RotatingFileHandler('app.log', maxBytes=10000, backupCount=3)
@@ -66,7 +68,7 @@ def process_file(filepath,rag_assistant,user_id,name):
     if rag_assistant.knowledge_base:
         with open(filepath, 'rb') as file:
                 # pdf_file = io.BytesIO(file.read())
-                reader = PDFReader(chunk_size=2900)
+                reader = PDFReader(chunk_size=1750)
                 # rag_name = name
                 rag_documents: List[Document] = reader.read(filepath)
                 if rag_documents:

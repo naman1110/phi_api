@@ -66,7 +66,7 @@ def process_file(filepath,rag_assistant,user_id,name):
     if rag_assistant.knowledge_base:
         with open(filepath, 'rb') as file:
                 # pdf_file = io.BytesIO(file.read())
-                reader = PDFReader(chunk_size=2900)
+                reader = PDFReader(chunk_size=1750)
                 # rag_name = name
                 rag_documents: List[Document] = reader.read(filepath)
                 if rag_documents:

@@ -78,7 +78,7 @@ def process_file(filepath,rag_assistant,user_id,name):
                 else:
                     logging.error(f"Could not read PDF {filepath}")
 
-@app.route('/get_file_contents', methods=['GET'])
+@app.route('/listKB', methods=['GET'])
 def list_kb():
     if request.is_json:
       data = request.get_json()
@@ -129,6 +129,27 @@ def rag_chat():
     logging.info(f"run ids: {rag_assistant_run_ids} for user id:{rag_assistant.user_id}")
     return jsonify({"content": response,"kb_name":id}),200
     #return response
+
+@app.route('/get_file_contents', methods=['GET'])
+def get_file_contents():
+    if request.is_json:
+      data = request.get_json()
+      id=data.get('kb_name')
+      if id is None:
+          return "KB name not found", 404
+     
+      filename=data.get('kb_file_name')
+      if filename is None:
+          return "File name not found", 404
+ 
+      directory_path = upload_folder+"/"+id
+      file_path = os.path.join(directory_path, filename)
+      if os.path.exists(file_path):
+        with open(file_path, 'rb') as file:
+            file_contents = file.read()
+        return jsonify({"kb_name":id,'kb_file_name': filename, 'contents': str(file_contents)})
+      else:
+        return "File not found", 404
 
 @app.route('/clear', methods=['POST'])
 def clear_db():

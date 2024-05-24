@@ -68,7 +68,7 @@ def process_file(filepath,rag_assistant,user_id,name):
     if rag_assistant.knowledge_base:
         with open(filepath, 'rb') as file:
                 # pdf_file = io.BytesIO(file.read())
-                reader = PDFReader(chunk_size=1750)
+                reader = PDFReader(chunk_size=2000)
                 # rag_name = name
                 rag_documents: List[Document] = reader.read(filepath)
                 if rag_documents:
@@ -130,6 +130,27 @@ def rag_chat():
     return jsonify({"content": response,"kb_name":id}),200
     #return response
 
+@app.route('/get_file_contents', methods=['GET'])
+def get_file_contents():
+    if request.is_json:
+      data = request.get_json()
+      id=data.get('kb_name')
+      if id is None:
+          return "KB name not found", 404
+     
+      filename=data.get('kb_file_name')
+      if filename is None:
+          return "File name not found", 404
+ 
+      directory_path = upload_folder+"/"+id
+      file_path = os.path.join(directory_path, filename)
+      if os.path.exists(file_path):
+        with open(file_path, 'rb') as file:
+            file_contents = file.read()
+        return jsonify({"kb_name":id,'kb_file_name': filename, 'contents': str(file_contents)})
+      else:
+        return "File not found", 404
+
 @app.route('/clear', methods=['POST'])
 def clear_db():
     try:
@@ -153,6 +174,11 @@ def clear_db():
          return jsonify({'message': 'The Knowledge Base does not exists.', 'kb_name': id,"kb_path":directory_path}),404
          
     #return "Knowledge base cleared"
+
+@app.route('/status', methods=['GET'])
+def status_check():
+    logging.info('Status check called')
+    return jsonify({'status': 'API is up'}), 200
      
 
 

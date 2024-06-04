@@ -23,6 +23,7 @@ from assistant import get_groq_assistant ,get_openai_assistant
 import shutil
 
 app = Flask(__name__)
+app.config['MAX_CONTENT_LENGTH'] = 60 * 1024 * 1024  # 60 MB
 upload_folder = 'uploads'
 os.makedirs(upload_folder, exist_ok=True)
 ds=defaultdict(list)  

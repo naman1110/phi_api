@@ -59,7 +59,7 @@ def get_groq_assistant(
         instructions=[
             "When a user asks a question, you will be provided with information about the question.",
             "Retrieve relevant documents from the knowledge base to provide accurate and up-to-date information.", 
-            "Carefully read this information and provide a accurate and informed answer to the user.",
+            "Carefully read this information and provide a accurate and brief answer to the user.",
             "Do not start responses with greetings or repeat the user's question.",
             
          

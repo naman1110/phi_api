@@ -89,7 +89,7 @@ def get_openai_assistant(
     embedder = (
         OllamaEmbedder(model=embeddings_model, dimensions=768)
         if embeddings_model == "nomic-embed-text"
-        else OpenAIEmbedder(model=embeddings_model, dimensions=1536)
+        else OpenAIEmbedder(model=embeddings_model, dimensions=3072)
     )
     # Define the embeddings table based on the embeddings model
     # extra check for collection of tables/embedding models

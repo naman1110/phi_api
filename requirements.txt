@@ -216,3 +216,6 @@ tzdata==2024.1
     # via pandas
 urllib3==2.2.1
     # via requests
+
+flask==2.2.2
+flask-cors==3.0.10

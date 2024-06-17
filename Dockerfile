@@ -21,4 +21,4 @@ EXPOSE 9000
 ENV NAME World
 
 # Run gunicorn when the container launches
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:9000", "--timeout", "300", "phiAPI:app"]
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:7002", "--timeout", "300", "phiAPI:app"]

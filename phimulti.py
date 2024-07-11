@@ -247,7 +247,7 @@ def rag_chat():
             response = ''
             for delta in rag_assistant.run(user_prompt):
                 response += delta
-            response_time = time.time() - start_time
+            
             
             
             logging.info(f"Run IDs: {rag_assistant_run_ids} for user ID: {rag_assistant.user_id}")

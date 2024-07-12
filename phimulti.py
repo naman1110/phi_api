@@ -80,7 +80,7 @@ def select_model():
 
 @app.route('/receive-file', methods=['POST'])
 def receive_file():
-    global p_llm_model, assistant_processor
+    
     # Get Knowledge Base (KB) name from request parameter
     folder_name_param = request.form.get('kb_name')
     folder_name = folder_name_param
@@ -90,7 +90,16 @@ def receive_file():
     # Create folder if it doesn't exist
    
     
-    rag_assistant = assistant_processor(llm_model=p_llm_model, embeddings_model=p_embeddings_model,user_id=folder_name_param)
+    user_context = user_model_mapping.get(folder_name_param , {
+            'llm_model': default_llm_model,
+            'assistant_processor': default_assistant_processor
+        })
+
+    llm_model = user_context['llm_model']
+    assistant_processor = user_context['assistant_processor']
+    
+    rag_assistant = assistant_processor(llm_model=llm_model, embeddings_model=p_embeddings_model,user_id=folder_name_param)
+    
     
     # Handle file uploads
     if 'file' in request.files:

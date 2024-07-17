@@ -5,7 +5,7 @@ import json
 
 
 # PostgreSQL connection details
-connection_details = "dbname='ai' user='ai' host='10.2.3.54' password='ai' port='5532'"
+connection_details = "dbname='ai' user='ai' host='localhost' password='ai' port='5532'"
 
 # Function to delete rows by matching column "name" with the given variable
 def delete_rows_by_name(kb_name, name_value):
